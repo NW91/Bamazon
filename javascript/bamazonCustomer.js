@@ -49,4 +49,7 @@ function userPrompt() {
         }
 
     ])
-};
+    .then(function(answer) {
+        checkItem(answer.id, answer.numUnits);
+    });
+}
