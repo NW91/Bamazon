@@ -50,6 +50,29 @@ function userPrompt() {
 
     ])
     .then(function(answer) {
-        checkItem(answer.productID, answer.numUnits);
+        checkProducts(answer.productID, answer.numUnits);
     });
 }
+
+function searchProducts(id, quantity) {
+    var query = 'SELECT * FROM products';
+    connection.query(query,
+        function (err, res) {
+            if (err) throw err;
+            var productID = parseInt(id);
+            var numUnits = parseInt(quantity);
+            var chosenItems;
+            for (var i = 0; i < res.length; i++) {
+                if (res[i].item_id === productID) {
+                    chosenItems = res[i];
+                }
+            }
+            //If there isn't enough quantity it will tell them to start over
+            if (chosenItems.stock_quantity < numItems) {
+                console.log("Sorry, but we don't have enough of these in stock!")
+                userPrompt();
+            } else {
+                submitOrder(chosenItems, numUnits);
+            }
+        });
+};
