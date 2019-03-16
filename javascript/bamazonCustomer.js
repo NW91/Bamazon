@@ -50,7 +50,7 @@ function userPrompt() {
 
     ])
     .then(function(answer) {
-        checkProducts(answer.productID, answer.numUnits);
+        searchProducts(answer.productID, answer.numUnits);
     });
 }
 
@@ -68,11 +68,28 @@ function searchProducts(id, quantity) {
                 }
             }
             //If there isn't enough quantity it will tell them to start over
-            if (chosenItems.stock_quantity < numItems) {
+            if (chosenItems.stock_quantity < numUnits) {
                 console.log("Sorry, but we don't have enough of these in stock!")
                 userPrompt();
             } else {
-                submitOrder(chosenItems, numUnits);
+                submittingOrder(chosenItems, numUnits);
             }
         });
+};
+
+function submittingOrder(chosenItems, numUnits) {
+    let newStock = chosenItems.stock_quantity - numUnits;
+    let totalPrice = chosenItems.price * numUnits;
+    var query = 'UPDATE products SET ? WHERE ?'
+    connection.query(query, [{
+            stock_quantity: newStock
+        },
+        {
+            item_id: chosenItems.item_id
+        }
+    ], function (err) {
+        if (err) throw err;
+        console.log(`You bought ${numUnits} units of the ${chosenItems.product_name}.  You spent $${totalPrice}.`);
+        connection.end();
+    })
 };
