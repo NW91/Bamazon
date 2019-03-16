@@ -8,14 +8,14 @@ var keys = require("./keys.js")
 // create the connection information for the sql database
 var connection = mysql.createConnection({
     host: "localhost",
-    port: 8080,
+    port: 3306,
     user: "root",
     password: keys.secret,
     database: "bamazonDB"
 });
 
 // connect to the mysql server and sql database
-connection.connect(function(err) {
+connection.connect(function (err) {
     if (err) throw err;
     // run the start function after the connection is made to prompt the user
     start();
@@ -38,7 +38,7 @@ function start() {
 function userPrompt() {
     inquirer.prompt([
         {
-            name: 'id',
+            name: 'productID',
             type: 'input',
             message: 'What is the ID number of the item you would like to buy today?'
         },
@@ -50,6 +50,6 @@ function userPrompt() {
 
     ])
     .then(function(answer) {
-        checkItem(answer.id, answer.numUnits);
+        checkItem(answer.productID, answer.numUnits);
     });
 }
